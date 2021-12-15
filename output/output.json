@@ -1,0 +1,19 @@
+{
+  "domain": "http://localhost:8080",
+  "site": {
+    "host": "localhost",
+    "port": "8080",
+    "date": "07-12-2021",
+    "ssl": "true",
+    "alerts": [
+      {
+        "pluginid": "40012",
+        "name": "Cross Site Scripting (Reflected)"
+      },
+      {
+        "pluginid": "40012",
+        "name": "Cross Site Scripting (Reflected)"
+      }
+    ]
+  }
+}
