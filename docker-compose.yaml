@@ -20,5 +20,12 @@ services:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
       - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
       - ME_CONFIG_MONGODB_SERVER=mongodb
+  selenium-hub:
+    image: selenium/hub:4.0.0-rc-1-prerelease-20210823
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+    environment:
+      - SELENIUM_REMOTE_HOST=selenium-hub
 volumes:
   data: {}
