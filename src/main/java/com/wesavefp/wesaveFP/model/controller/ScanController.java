@@ -7,6 +7,7 @@ import com.wesavefp.wesaveFP.service.ScanService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.zaproxy.clientapi.core.ClientApiException;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +32,19 @@ public class ScanController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @PostMapping(value = "/template", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void template(@RequestBody(required = false) CreateScanRequest request) {
+        try {
+            scanService.template();
+        } catch (ClientApiException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 

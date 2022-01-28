@@ -18,14 +18,18 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -106,21 +110,21 @@
 			<artifactId>zap-java-api</artifactId>
 			<version>2.4.2</version>
 			<scope>system</scope>
-			<systemPath>/home/hduser/Documents/WeSave/wesaveFP/libs/proxy-2.4.2-SNAPSHOT.jar</systemPath>
+			<systemPath>/home/hduser/Documents/final-project-izzat/wesaveFP/libs/proxy-2.4.2-SNAPSHOT.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.owasp</groupId>
 			<artifactId>zaproxy-client-api</artifactId>
-			<version>2.4-6</version>
+			<version>1.10.0</version>
 			<scope>system</scope>
-			<systemPath>/home/hduser/Documents/WeSave/wesaveFP/libs/zap-api-2.4-v6.jar</systemPath>
+			<systemPath>/home/hduser/Documents/final-project-izzat/wesaveFP/libs/zap-api-1.10.0.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>edu.umass.cs.benchlab</groupId>
 			<artifactId>harlib</artifactId>
 			<version>1.1.1</version>
 			<scope>system</scope>
-			<systemPath>/home/hduser/Documents/WeSave/wesaveFP/libs/harlib-1.1.1.jar</systemPath>
+			<systemPath>/home/hduser/Documents/final-project-izzat/wesaveFP/libs/harlib-1.1.1.jar</systemPath>
 		</dependency>
 	</dependencies>
 

@@ -9,32 +9,40 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class JsonToObject {
 
-
-    public static Scan convertFromJson() {
-        JSONParser jsonParser = new JSONParser();
-        File f = new File("./output/output.json");
-        try (FileReader reader = new FileReader("./output/output.json")) {
-            Object obj = jsonParser.parse(reader);
-            JSONObject list = (JSONObject) obj;
-            System.out.println(list);
-            Scan scan = parseListObject(list);
-            //f.delete();
-            System.out.println("Deleted");
-            return scan;
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        ObjectInputStream is = new ObjectInputStream(in);
+        return is.readObject();
     }
+
+    public static void convertFromJson(byte[] data) throws IOException, ClassNotFoundException {
+        Object report = deserialize(data);
+        System.out.println(report);
+    }
+
+//    public static Scan convertFromJson() {
+//        JSONParser jsonParser = new JSONParser();
+//        File f = new File("./output/output.json");
+//        try (FileReader reader = new FileReader("./output/output.json")) {
+//            Object obj = jsonParser.parse(reader);
+//            JSONObject list = (JSONObject) obj;
+//            System.out.println(list);
+//            Scan scan = parseListObject(list);
+//            //f.delete();
+//            System.out.println("Deleted");
+//            return scan;
+//        } catch (IOException | ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     private static Scan parseListObject(JSONObject list) {
         Scan scan = new Scan();
