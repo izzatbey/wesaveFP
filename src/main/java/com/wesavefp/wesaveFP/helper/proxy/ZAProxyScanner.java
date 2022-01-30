@@ -7,7 +7,6 @@ import org.codehaus.jackson.JsonGenerator;
 import edu.umass.cs.benchlab.har.HarEntry;
 import edu.umass.cs.benchlab.har.HarLog;
 import edu.umass.cs.benchlab.har.HarRequest;
-import com.wesavefp.wesaveFP.helper.proxy.ProxyException;
 import edu.umass.cs.benchlab.har.tools.HarFileReader;
 import org.openqa.selenium.Proxy;
 import org.zaproxy.clientapi.core.*;
@@ -40,6 +39,7 @@ public class ZAProxyScanner implements ScanningProxy, Spider {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("http://").append(host).append(":").append(port).append("/proxy.pac");
         this.seleniumProxy.setProxyAutoconfigUrl(strBuilder.toString());
+        log.info("ZAP Proxy Created");
     }
 
     private static void validateHost(String host) {
@@ -338,9 +338,9 @@ public class ZAProxyScanner implements ScanningProxy, Spider {
     public void setEnableScanners(String ids, boolean enabled) throws ProxyException {
         try {
             if (enabled) {
-                this.clientApi.ascan.enableScanners(this.apiKey, ids);
+                this.clientApi.ascan.enableScanners(ids, "Default Policy");
             } else {
-                this.clientApi.ascan.disableScanners(this.apiKey, ids);
+                this.clientApi.ascan.disableScanners(ids, "Default Policy");
             }
         } catch (ClientApiException e) {
             e.printStackTrace();
@@ -402,7 +402,7 @@ public class ZAProxyScanner implements ScanningProxy, Spider {
     @Override
     public void spider(String url) {
         try {
-            this.clientApi.spider.scan(this.apiKey, url, (String)null, "true");
+            this.clientApi.spider.scan(url, "0", "false" ,(String)null, "true");
         } catch (ClientApiException e) {
             e.printStackTrace();
             throw new ProxyException(e);

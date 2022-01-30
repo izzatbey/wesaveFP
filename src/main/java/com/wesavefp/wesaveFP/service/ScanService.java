@@ -8,9 +8,7 @@ import java.util.List;
 
 public interface ScanService {
 
-    Scan start() throws IOException;
-
-    void template() throws ClientApiException, IOException, ClassNotFoundException;
+    Scan start() throws IOException, ClientApiException, ClassNotFoundException;
 
     void update(String id);
 

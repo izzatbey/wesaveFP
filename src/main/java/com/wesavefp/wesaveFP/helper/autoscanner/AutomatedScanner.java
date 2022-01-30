@@ -1,21 +1,19 @@
 package com.wesavefp.wesaveFP.helper.autoscanner;
 
+import com.google.gson.Gson;
 import com.wesavefp.wesaveFP.helper.GenerateReport;
 import com.wesavefp.wesaveFP.helper.JsonToObject;
 import com.wesavefp.wesaveFP.helper.proxy.ScanningProxy;
 import com.wesavefp.wesaveFP.helper.proxy.Spider;
 import com.wesavefp.wesaveFP.helper.proxy.ZAProxyScanner;
+import com.wesavefp.wesaveFP.model.database.Scan;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.zaproxy.clientapi.core.Alert;
+import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -25,25 +23,23 @@ public class AutomatedScanner {
     private final static String ZAP_HOST = "localhost";
     private final static int ZAP_PORT = 8098;
     private final static String ZAP_APIKEY = null;
-
-    //Driver Setup
+    private ClientApi clientApi;
     private final static String DRIVER_PATH = "/home/hduser/Documents/final-project-izzat/wesaveFP/drivers/chromedriver";
     private static String THRESHOLD = "MEDIUM";
     private static String STRENGTH = "HIGH";
-    private static String template = "traditional-json";
     private static ScanningProxy scanner;
     private static Spider spider;
     private static WebDriver driver;
     private static AppNavigation appNav;
-    public static String BASE_URL = "http://localhost:3000/";
+    public static String BASE_URL = "http://localhost:3000";
     private final static String[] policyNames = {"directory-browsing","cross-site-scripting","sql-injection","path-traversal","remote-file-inclusion","server-side-include",
             "script-active-scan-rules","server-side-code-injection","external-redirect","crlf-injection"};
     static int currentScanID;
 
     public static void reportGenerate() throws ClientApiException, IOException, ClassNotFoundException {
-        GenerateReport generateReport = new GenerateReport(ZAP_HOST, ZAP_PORT, template);
-        byte[] report = generateReport.generate();
-        JsonToObject.convertFromJson(report);
+        GenerateReport generateReport = new GenerateReport(ZAP_HOST, ZAP_PORT, BASE_URL);
+        generateReport.generateJson();
+        log.info("Report JSON Created");
     }
 
     public static void start() throws IOException {
@@ -61,6 +57,11 @@ public class AutomatedScanner {
         appNav = new AppNavigation(driver, BASE_URL);
     }
 
+//    public void setupDriver() throws ClientApiException {
+//        this.clientApi = new ClientApi(ZAP_HOST, ZAP_PORT);
+//        clientApi.selenium.setOptionChromeDriverPath(DRIVER_PATH);
+//    }
+
     private static Proxy createZapProxyConfigurationForWebDriver() {
         Proxy proxy = new Proxy();
         proxy.setHttpProxy(ZAP_HOST + ":" + ZAP_PORT);
@@ -76,12 +77,6 @@ public class AutomatedScanner {
         setAlertAndAttackStrength();
         scanner.setEnablePassiveScan(true);
         scanWithZap();
-        appNav.generateReport();
-        log.info("JSON Report Generated");
-    }
-
-    private static void Reports() throws IOException {
-
     }
 
     private static void logAlerts(List<Alert> alerts) {

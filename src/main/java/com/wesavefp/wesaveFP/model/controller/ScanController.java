@@ -30,22 +30,12 @@ public class ScanController {
             return scanService.start();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        return null;
-    }
-
-    @PostMapping(value = "/template", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void template(@RequestBody(required = false) CreateScanRequest request) {
-        try {
-            scanService.template();
         } catch (ClientApiException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return null;
     }
-
 
 }

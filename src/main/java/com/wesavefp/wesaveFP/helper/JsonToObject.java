@@ -1,6 +1,7 @@
 package com.wesavefp.wesaveFP.helper;
 
 
+import com.google.gson.JsonElement;
 import com.wesavefp.wesaveFP.model.database.Alert;
 import com.wesavefp.wesaveFP.model.database.Scan;
 import com.wesavefp.wesaveFP.model.database.Site;
@@ -10,67 +11,56 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class JsonToObject {
 
-    public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        ObjectInputStream is = new ObjectInputStream(in);
-        return is.readObject();
-    }
 
-    public static void convertFromJson(byte[] data) throws IOException, ClassNotFoundException {
-        Object report = deserialize(data);
-        System.out.println(report);
+    public static Scan convertFromJson() {
+        JSONParser jsonParser = new JSONParser();
+        File f = new File("./output/output.json");
+        try (FileReader reader = new FileReader("./output/output.json")){
+            Object obj = jsonParser.parse(reader);
+            JSONObject list = (JSONObject) obj;
+            Scan scan = parseListObject(list);
+            f.delete();
+            return scan;
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-
-//    public static Scan convertFromJson() {
-//        JSONParser jsonParser = new JSONParser();
-//        File f = new File("./output/output.json");
-//        try (FileReader reader = new FileReader("./output/output.json")) {
-//            Object obj = jsonParser.parse(reader);
-//            JSONObject list = (JSONObject) obj;
-//            System.out.println(list);
-//            Scan scan = parseListObject(list);
-//            //f.delete();
-//            System.out.println("Deleted");
-//            return scan;
-//        } catch (IOException | ParseException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
 
     private static Scan parseListObject(JSONObject list) {
         Scan scan = new Scan();
         Site site = new Site();
 
         String date = (String) list.get("@generated");
-        System.out.println(date);
+//        System.out.println(date);
 
         JSONArray siteObject = (JSONArray) list.get("site");
-        System.out.println(siteObject);
+//        System.out.println(siteObject);
 
         JSONObject domainIdx = (JSONObject) siteObject.get(0);
-        System.out.println(domainIdx);
+//        System.out.println(domainIdx);
 
         List<Map<String, String>> alertObj = (List<Map<String, String>>) domainIdx.get("alerts");
         List<Alert> alerts = new ArrayList<Alert>();
 
         String domain = (String) domainIdx.get("@name");
-        System.out.println(domain);
+//        System.out.println(domain);
 
         String host = (String) domainIdx.get("@host");
-        System.out.println(host);
+//        System.out.println(host);
 
         String port = (String) domainIdx.get("@port");
-        System.out.println(port);
+//        System.out.println(port);
 
         String ssl = (String) domainIdx.get("@ssl");
-        System.out.println(ssl);
+//        System.out.println(ssl);
 
         scan.setDomain(domain);
         scan.setSite(site);
@@ -83,7 +73,7 @@ public class JsonToObject {
 
         //List Alert
         alertObj.forEach(arr -> alerts.add(parseArrayToAlerts(arr)));
-        System.out.println(alerts.toString());
+//        System.out.println(alerts.toString());
 
         return scan;
     }
