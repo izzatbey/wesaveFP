@@ -1,6 +1,6 @@
 package com.wesavefp.wesaveFP.helper.proxy;
 
-import net.continuumsecurity.proxy.model.ScanResponse;
+import com.wesavefp.wesaveFP.helper.proxy.model.ScanResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;

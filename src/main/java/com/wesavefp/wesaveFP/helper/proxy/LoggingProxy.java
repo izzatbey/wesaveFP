@@ -4,8 +4,6 @@ import edu.umass.cs.benchlab.har.HarEntry;
 import edu.umass.cs.benchlab.har.HarRequest;
 import java.net.UnknownHostException;
 import java.util.List;
-
-import net.continuumsecurity.proxy.ProxyException;
 import org.openqa.selenium.Proxy;
 
 public interface LoggingProxy {

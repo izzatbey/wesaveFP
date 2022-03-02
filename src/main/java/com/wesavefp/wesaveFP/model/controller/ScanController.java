@@ -1,6 +1,5 @@
 package com.wesavefp.wesaveFP.model.controller;
 
-import com.wesavefp.wesaveFP.helper.JsonToObject;
 import com.wesavefp.wesaveFP.model.database.Scan;
 import com.wesavefp.wesaveFP.model.request.CreateScanRequest;
 import com.wesavefp.wesaveFP.service.ScanService;
@@ -25,14 +24,13 @@ public class ScanController {
     }
 
     @PostMapping(value = "/start", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Scan startScan(@RequestBody(required = false) CreateScanRequest request){
+    public Scan startScan(@RequestBody(required = true) CreateScanRequest request){
         try {
-            return scanService.start();
+//            System.out.println("request : " + request.getDomain());
+            return scanService.start(request);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClientApiException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

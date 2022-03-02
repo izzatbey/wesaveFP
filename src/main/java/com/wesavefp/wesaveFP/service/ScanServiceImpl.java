@@ -3,6 +3,7 @@ package com.wesavefp.wesaveFP.service;
 import com.wesavefp.wesaveFP.helper.JsonToObject;
 import com.wesavefp.wesaveFP.helper.autoscanner.AutomatedScanner;
 import com.wesavefp.wesaveFP.model.database.Scan;
+import com.wesavefp.wesaveFP.model.request.CreateScanRequest;
 import com.wesavefp.wesaveFP.repository.ScanRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class ScanServiceImpl implements ScanService {
     private ScanRepository scanRepository;
 
     @Override
-    public Scan start() throws IOException, ClientApiException, ClassNotFoundException {
-        AutomatedScanner.start();
-        AutomatedScanner.reportGenerate();
+    public Scan start(CreateScanRequest request) throws ClientApiException {
+        AutomatedScanner automatedScanner = new AutomatedScanner(request);
+        automatedScanner.start();
         Scan scan = JsonToObject.convertFromJson();
         return scanRepository.save(scan);
     }

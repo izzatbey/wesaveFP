@@ -106,13 +106,6 @@
 			<version>3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>net.continuumsecurity</groupId>
-			<artifactId>zap-java-api</artifactId>
-			<version>2.4.2</version>
-			<scope>system</scope>
-			<systemPath>/home/hduser/Documents/final-project-izzat/wesaveFP/libs/proxy-2.4.2-SNAPSHOT.jar</systemPath>
-		</dependency>
-		<dependency>
 			<groupId>org.owasp</groupId>
 			<artifactId>zaproxy-client-api</artifactId>
 			<version>1.10.0</version>
@@ -125,6 +118,13 @@
 			<version>1.1.1</version>
 			<scope>system</scope>
 			<systemPath>/home/hduser/Documents/final-project-izzat/wesaveFP/libs/harlib-1.1.1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>net.continuumsecurity</groupId>
+			<artifactId>zap-java-api</artifactId>
+			<version>2.4.2</version>
+			<scope>system</scope>
+			<systemPath>/home/hduser/Documents/final-project-izzat/wesaveFP/libs/proxy-2.4.2-SNAPSHOT.jar</systemPath>
 		</dependency>
 	</dependencies>
 

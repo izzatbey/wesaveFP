@@ -1,75 +1,68 @@
 package com.wesavefp.wesaveFP.helper.autoscanner;
 
-import com.google.gson.Gson;
 import com.wesavefp.wesaveFP.helper.GenerateReport;
-import com.wesavefp.wesaveFP.helper.JsonToObject;
 import com.wesavefp.wesaveFP.helper.proxy.ScanningProxy;
 import com.wesavefp.wesaveFP.helper.proxy.Spider;
 import com.wesavefp.wesaveFP.helper.proxy.ZAProxyScanner;
-import com.wesavefp.wesaveFP.model.database.Scan;
+import com.wesavefp.wesaveFP.model.request.CreateScanRequest;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.zaproxy.clientapi.core.Alert;
-import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class AutomatedScanner {
-    static Logger log = Logger.getLogger(AutomatedScanner.class.getName());
-    private final static String ZAP_HOST = "localhost";
-    private final static int ZAP_PORT = 8098;
-    private final static String ZAP_APIKEY = null;
-    private ClientApi clientApi;
-    private final static String DRIVER_PATH = "/home/hduser/Documents/final-project-izzat/wesaveFP/drivers/chromedriver";
-    private static String THRESHOLD = "MEDIUM";
-    private static String STRENGTH = "HIGH";
-    private static ScanningProxy scanner;
-    private static Spider spider;
-    private static WebDriver driver;
-    private static AppNavigation appNav;
-    public static String BASE_URL = "http://localhost:3000";
-    private final static String[] policyNames = {"directory-browsing","cross-site-scripting","sql-injection","path-traversal","remote-file-inclusion","server-side-include",
-            "script-active-scan-rules","server-side-code-injection","external-redirect","crlf-injection"};
-    static int currentScanID;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
-    public static void reportGenerate() throws ClientApiException, IOException, ClassNotFoundException {
-        GenerateReport generateReport = new GenerateReport(ZAP_HOST, ZAP_PORT, BASE_URL);
+public class AutomatedScanner {
+     Logger log = Logger.getLogger(AutomatedScanner.class.getName());
+    private final String ZAP_HOST = "localhost";
+    private final int ZAP_PORT = 8098;
+    private final String ZAP_APIKEY = null;
+    private ScanningProxy scanner;
+    private Spider spider;
+    private WebDriver driver;
+//    private  String[] policyNames = {"directory-browsing","cross-site-scripting","sql-injection","path-traversal","remote-file-inclusion","server-side-include","script-active-scan-rules","server-side-code-injection","external-redirect","crlf-injection"};
+     int currentScanID;
+    private CreateScanRequest request;
+
+    public AutomatedScanner(CreateScanRequest request) {
+        this.request = request;
+    }
+
+    private void reportGenerate() throws ClientApiException {
+        GenerateReport generateReport = new GenerateReport(ZAP_HOST, ZAP_PORT, this.request.getUrl());
         generateReport.generateJson();
         log.info("Report JSON Created");
     }
 
-    public static void start() throws IOException {
+    public void start() throws ClientApiException {
         setup();
         WebSpider();
+        reportGenerate();
     }
 
-    public static void setup() {
+    public  void setup() {
         scanner = new ZAProxyScanner(ZAP_HOST, ZAP_PORT, ZAP_APIKEY);
         scanner.clear();
         spider = (Spider) scanner;
         log.info("Created client to ZAP API");
+        String DRIVER_PATH = "/home/hduser/Documents/final-project-izzat/wesaveFP/drivers/chromedriver";
         driver = DriverFactory.createProxyDriver("chrome",createZapProxyConfigurationForWebDriver(), DRIVER_PATH);
         log.info("Driver Created");
-        appNav = new AppNavigation(driver, BASE_URL);
     }
 
-//    public void setupDriver() throws ClientApiException {
-//        this.clientApi = new ClientApi(ZAP_HOST, ZAP_PORT);
-//        clientApi.selenium.setOptionChromeDriverPath(DRIVER_PATH);
-//    }
-
-    private static Proxy createZapProxyConfigurationForWebDriver() {
+    private  Proxy createZapProxyConfigurationForWebDriver() {
         Proxy proxy = new Proxy();
         proxy.setHttpProxy(ZAP_HOST + ":" + ZAP_PORT);
         proxy.setSslProxy(ZAP_HOST + ":" + ZAP_PORT);
         return proxy;
     }
 
-    public static void WebSpider() throws IOException{
+    public void WebSpider() {
         log.info("Spidering...");
         spiderWithZap();
         log.info("Spider done.");
@@ -77,9 +70,13 @@ public class AutomatedScanner {
         setAlertAndAttackStrength();
         scanner.setEnablePassiveScan(true);
         scanWithZap();
+
+        List<Alert> alerts = filterAlerts(scanner.getAlerts());
+        logAlerts(alerts);
+        assertThat(alerts.size(), equalTo(0));
     }
 
-    private static void logAlerts(List<Alert> alerts) {
+    private void logAlerts(List<Alert> alerts) {
         for (Alert alert : alerts) {
             log.info("Alert: "+alert.getAlert()+" at URL: "+alert.getUrl()+" Parameter: "+alert.getParam()+" CWE ID: "+alert.getCweId());
         }
@@ -87,7 +84,7 @@ public class AutomatedScanner {
     /*
         Remove false positives, filter based on risk and reliability
      */
-    private static List<Alert> filterAlerts(List<Alert> alerts) {
+    private  List<Alert> filterAlerts(List<Alert> alerts) {
         List<Alert> filtered = new ArrayList<Alert>();
         for (Alert alert : alerts) {
             if (alert.getRisk().equals(Alert.Risk.High) && alert.getConfidence() != Alert.Confidence.Low) filtered.add(alert);
@@ -95,9 +92,9 @@ public class AutomatedScanner {
         return filtered;
     }
 
-    private static void scanWithZap() {
+    private void scanWithZap() {
         log.info("Scanning...");
-        scanner.scan(BASE_URL);
+        scanner.scan(this.request.getUrl());
         currentScanID = scanner.getLastScannerScanId();
         int complete = 0;
         while (complete < 100) {
@@ -112,21 +109,21 @@ public class AutomatedScanner {
         log.info("Scanning done.");
     }
 
-    public static void setAlertAndAttackStrength() {
-        for (String policyName : policyNames) {
+    public void setAlertAndAttackStrength() {
+        for (String policyName : this.request.getPolicyNames()) {
             String ids = enableZapPolicy(policyName);
             for (String id : ids.split(",")) {
-                scanner.setScannerAlertThreshold(id,THRESHOLD);
-                scanner.setScannerAttackStrength(id,STRENGTH);
+                scanner.setScannerAlertThreshold(id, this.request.getThreshold());
+                scanner.setScannerAttackStrength(id, this.request.getStrength());
             }
         }
     }
 
-    private static void spiderWithZap() {
+    private  void spiderWithZap() {
         spider.setThreadCount(5);
         spider.setMaxDepth(5);
         spider.setPostForms(false);
-        spider.spider(BASE_URL);
+        spider.spider(this.request.getUrl());
         int spiderID = spider.getLastSpiderScanId();
         int complete  = 0;
         while (complete < 100) {
@@ -142,7 +139,7 @@ public class AutomatedScanner {
         }
     }
 
-    private static String enableZapPolicy(String policyName) {
+    private  String enableZapPolicy(String policyName) {
         String scannerIds = null;
         switch (policyName.toLowerCase()) {
             case "directory-browsing":

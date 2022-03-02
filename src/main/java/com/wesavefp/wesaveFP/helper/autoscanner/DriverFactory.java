@@ -1,6 +1,5 @@
 package com.wesavefp.wesaveFP.helper.autoscanner;
 
-import org.apache.log4j.Logger;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,7 +14,6 @@ import java.io.File;
 public class DriverFactory {
     private final static String CHROME = "chrome";
     private final static String FIREFOX = "firefox";
-    static Logger log = Logger.getLogger(DriverFactory.class.getName());
 
 
     public static WebDriver createProxyDriver(String type, Proxy proxy, String path) {

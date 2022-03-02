@@ -1,7 +1,5 @@
 package com.wesavefp.wesaveFP.helper;
 
-
-import com.google.gson.JsonElement;
 import com.wesavefp.wesaveFP.model.database.Alert;
 import com.wesavefp.wesaveFP.model.database.Scan;
 import com.wesavefp.wesaveFP.model.database.Site;
@@ -11,7 +9,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

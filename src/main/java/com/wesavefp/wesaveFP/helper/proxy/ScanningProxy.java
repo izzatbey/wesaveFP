@@ -2,7 +2,6 @@ package com.wesavefp.wesaveFP.helper.proxy;
 
 import java.util.List;
 
-import net.continuumsecurity.proxy.ProxyException;
 import org.zaproxy.clientapi.core.Alert;
 
 public interface ScanningProxy extends LoggingProxy {
